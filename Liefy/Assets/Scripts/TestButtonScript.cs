@@ -7,4 +7,9 @@ public class TestButtonScript : MonoBehaviour
     {
         SceneManager.LoadScene(sceneName);
     }
+
+    //    public void ChangeTransparency(GameObject obj)
+    //    {
+    //        obj.GetComponent<>
+    //    }
 }
