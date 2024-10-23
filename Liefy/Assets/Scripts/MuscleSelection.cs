@@ -3,6 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UIElements;
+using System;
 
 public class MuscleSelection : MonoBehaviour
 {
@@ -10,7 +11,6 @@ public class MuscleSelection : MonoBehaviour
 
     Vector3 targetScale = new Vector3(2, 2, 0);
 
-    [SerializeField] Vector3 startpos;
     float startscale;
 
     [SerializeField] float CornerOffset;
@@ -23,26 +23,29 @@ public class MuscleSelection : MonoBehaviour
     private void Start()
     {
         startscale = rt.localScale.x;
-        Debug.Log(startpos);
     }
 
     public void MoveToCorner()
     {
-        TargetPos = new Vector2(0 + rt.rect.width + CornerOffset, 0 - rt.rect.height - CornerOffset * 2.5f);
+        TargetPos = new Vector3(0 + rt.rect.width + CornerOffset, 0 - rt.rect.height - CornerOffset * 2.5f, 2);
         rt.DOScale(TargetScale, ScaleTweenDuration);
-        StartCoroutine(DelayedMovement(MovementDelay));
+        StartCoroutine(DelayedMovement(MovementDelay, false));
+        GameObject.Find("BlackFade").GetComponent<SceneChanger>().FadeToScene(gameObject.name);
     }
 
-    public void MoveToStartPos()
+    public void ReturnToTitle()
     {
-        TargetPos = startpos;
-        rt.DOScale(startscale, ScaleTweenDuration);
-        StartCoroutine(DelayedMovement(MovementDelay));
+        gameObject.SetActive(false);
+        GameObject.Find("BlackFade").GetComponent<SceneChanger>().FadeToScene("MainMenu");
     }
 
-    private IEnumerator DelayedMovement(float delay)
+    private IEnumerator DelayedMovement(float delay, bool delete)
     {
         yield return new WaitForSeconds(delay);
         rt.DOAnchorPos(TargetPos, MovementTweenDuration);
+        if (delete)
+        {
+            Destroy(gameObject);
+        }
     }
 }
